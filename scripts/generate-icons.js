@@ -1,4 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+import sharp from 'sharp';
+import { mkdirSync, writeFileSync } from 'fs';
+
+const SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
   <defs>
     <radialGradient id="bg" cx="50%" cy="40%" r="60%">
       <stop offset="0%" stop-color="#1e293b"/>
@@ -89,4 +92,30 @@
 
   <!-- Subtle belly highlight -->
   <ellipse cx="256" cy="295" rx="55" ry="35" fill="#fff" opacity="0.06"/>
-</svg>
+</svg>`;
+
+const sizes = [192, 512];
+
+async function generate() {
+  mkdirSync('public/icons', { recursive: true });
+
+  // Write the SVG source too
+  writeFileSync('public/icons/crab-icon.svg', SVG);
+
+  for (const size of sizes) {
+    await sharp(Buffer.from(SVG))
+      .resize(size, size)
+      .png()
+      .toFile(`public/icons/icon-${size}.png`);
+    console.log(`Generated icon-${size}.png`);
+  }
+
+  // Apple touch icon (180x180)
+  await sharp(Buffer.from(SVG))
+    .resize(180, 180)
+    .png()
+    .toFile('public/apple-touch-icon.png');
+  console.log('Generated apple-touch-icon.png');
+}
+
+generate().catch(console.error);
