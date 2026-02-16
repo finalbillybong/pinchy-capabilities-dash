@@ -1,0 +1,9 @@
+services:
+  pinchy-portal:
+    build: .
+    container_name: pinchy-portal
+    ports:
+      - "8080:80"
+    volumes:
+      - /mnt/user/appdata/openclaw/config/workspace/portal:/data:ro
+    restart: unless-stopped

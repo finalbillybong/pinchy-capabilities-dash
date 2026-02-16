@@ -1,0 +1,242 @@
+{
+  "meta": {
+    "lastUpdated": "2026-02-16T20:50:00Z",
+    "version": "1.0",
+    "agent": "Pinchy"
+  },
+  "categories": [
+    {
+      "name": "Calendar & Scheduling",
+      "icon": "📅",
+      "capabilities": [
+        {
+          "name": "View calendar",
+          "description": "Check upcoming events and schedules",
+          "triggers": ["what's on today", "next week", "my calendar"],
+          "examples": ["What's on my calendar today?", "Show me next week's events"]
+        },
+        {
+          "name": "Add events",
+          "description": "Create new calendar entries",
+          "triggers": ["add event", "schedule", "book"],
+          "examples": ["Add dinner with mum on Friday 7pm", "Schedule dentist appointment Tuesday 2pm"]
+        },
+        {
+          "name": "Reminders",
+          "description": "Set time-based reminders",
+          "triggers": ["remind me", "reminder", "don't forget"],
+          "examples": ["Remind me to call the plumber at 3pm", "Set a reminder to take bins out tonight"]
+        }
+      ]
+    },
+    {
+      "name": "Meal Planning",
+      "icon": "🍽️",
+      "capabilities": [
+        {
+          "name": "Plan meals",
+          "description": "Generate weekly meal plans based on preferences",
+          "triggers": ["meal plan", "what should we eat", "plan meals"],
+          "examples": ["Plan meals for next week", "Suggest dinners for Monday to Friday"]
+        },
+        {
+          "name": "Shopping list",
+          "description": "Auto-generate shopping lists from meal plans",
+          "triggers": ["shopping list", "what do we need", "groceries"],
+          "examples": ["Make a shopping list for this week's meals", "What ingredients do we need?"]
+        },
+        {
+          "name": "Recipe lookup",
+          "description": "Find recipes based on ingredients or preferences",
+          "triggers": ["recipe for", "how to make", "cook"],
+          "examples": ["Find a recipe for chicken stir fry", "What can I make with mince and pasta?"]
+        }
+      ]
+    },
+    {
+      "name": "Home Automation",
+      "icon": "🏠",
+      "capabilities": [
+        {
+          "name": "Lights & switches",
+          "description": "Control smart home devices",
+          "triggers": ["turn on", "turn off", "lights"],
+          "examples": ["Turn off the living room lights", "Set bedroom lights to 50%"]
+        },
+        {
+          "name": "Climate control",
+          "description": "Manage heating and cooling",
+          "triggers": ["temperature", "heating", "thermostat"],
+          "examples": ["Set the heating to 21 degrees", "What's the temperature in the house?"]
+        },
+        {
+          "name": "Sensors & status",
+          "description": "Check home sensor readings",
+          "triggers": ["sensor", "status", "check"],
+          "examples": ["Is the garage door open?", "What's the humidity in the bathroom?"]
+        }
+      ]
+    },
+    {
+      "name": "Communication",
+      "icon": "💬",
+      "capabilities": [
+        {
+          "name": "Send messages",
+          "description": "Send messages via connected platforms",
+          "triggers": ["message", "tell", "send"],
+          "examples": ["Send a message to the family chat", "Tell Alex I'm running late"]
+        },
+        {
+          "name": "Email summaries",
+          "description": "Summarise and manage email",
+          "triggers": ["emails", "inbox", "mail"],
+          "examples": ["Summarise my unread emails", "Any important emails today?"]
+        }
+      ]
+    },
+    {
+      "name": "Information & Research",
+      "icon": "🔍",
+      "capabilities": [
+        {
+          "name": "Web search",
+          "description": "Search the web for current information",
+          "triggers": ["search", "look up", "find out"],
+          "examples": ["What's the weather this weekend?", "Look up train times to London"]
+        },
+        {
+          "name": "Knowledge base",
+          "description": "Answer questions from stored knowledge",
+          "triggers": ["what is", "how does", "explain"],
+          "examples": ["What's our WiFi password?", "When is bin collection day?"]
+        }
+      ]
+    },
+    {
+      "name": "Media & Entertainment",
+      "icon": "🎬",
+      "capabilities": [
+        {
+          "name": "Music control",
+          "description": "Control music playback",
+          "triggers": ["play music", "play", "song"],
+          "examples": ["Play some jazz in the kitchen", "What's currently playing?"]
+        },
+        {
+          "name": "TV & streaming",
+          "description": "Manage media servers and streaming",
+          "triggers": ["watch", "play on tv", "plex"],
+          "examples": ["What's new on Plex?", "Play the next episode of our show"]
+        }
+      ]
+    }
+  ],
+  "cronJobs": [
+    {
+      "name": "Morning Briefing",
+      "schedule": "07:00 daily",
+      "description": "Weather, calendar, reminders for the day",
+      "status": "active"
+    },
+    {
+      "name": "Meal Planning",
+      "schedule": "17:00 Fridays",
+      "description": "Generate next week's meal plan and shopping list",
+      "status": "active"
+    },
+    {
+      "name": "Weekly Review",
+      "schedule": "09:00 Sundays",
+      "description": "Summary of the week, upcoming events, tasks",
+      "status": "active"
+    },
+    {
+      "name": "Bin Reminder",
+      "schedule": "19:00 Tuesdays",
+      "description": "Reminder to put the bins out",
+      "status": "active"
+    },
+    {
+      "name": "Home Energy Report",
+      "schedule": "08:00 Mondays",
+      "description": "Weekly energy usage summary from Home Assistant",
+      "status": "paused"
+    }
+  ],
+  "dataLocations": [
+    {
+      "name": "Home Assistant",
+      "path": "homeassistant.local",
+      "type": "service"
+    },
+    {
+      "name": "Nextcloud",
+      "path": "nextcloud.local",
+      "type": "service"
+    },
+    {
+      "name": "Workspace",
+      "path": "/mnt/user/appdata/openclaw/config/workspace",
+      "type": "filesystem"
+    }
+  ],
+  "integrations": [
+    {
+      "name": "Home Assistant",
+      "icon": "🏠",
+      "status": "connected",
+      "description": "Smart home control and automation"
+    },
+    {
+      "name": "KitchenCupboard",
+      "icon": "🛒",
+      "status": "connected",
+      "description": "Inventory and shopping list management"
+    },
+    {
+      "name": "Nextcloud Calendar",
+      "icon": "📅",
+      "status": "connected",
+      "description": "Calendar and contacts sync"
+    },
+    {
+      "name": "AgentMail",
+      "icon": "📧",
+      "status": "connected",
+      "description": "Email send and receive"
+    },
+    {
+      "name": "Discord",
+      "icon": "💬",
+      "status": "connected",
+      "description": "Chat interface and notifications"
+    },
+    {
+      "name": "Plex",
+      "icon": "🎬",
+      "status": "connected",
+      "description": "Media library and playback"
+    }
+  ],
+  "wip": [
+    {
+      "name": "Gift Curator",
+      "description": "Gift ideas tracking and suggestions",
+      "note": "Alex birthday Mar 14",
+      "status": "in_progress"
+    },
+    {
+      "name": "Fitness Tracking",
+      "description": "Integration with health/fitness data",
+      "note": "Researching API options",
+      "status": "planned"
+    },
+    {
+      "name": "Budget Assistant",
+      "description": "Monthly spending summaries and alerts",
+      "note": "Waiting on bank API access",
+      "status": "planned"
+    }
+  ]
+}
