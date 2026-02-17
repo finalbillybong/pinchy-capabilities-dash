@@ -56,10 +56,22 @@
   font-weight: 600;
 }
 
+.cron-schedule-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 6px;
+}
+
 .cron-schedule {
   font-size: 13px;
   color: var(--accent);
-  margin-top: 6px;
+  font-weight: 500;
+}
+
+.cron-next {
+  font-size: 11px;
+  color: var(--text-muted);
   font-weight: 500;
 }
 

@@ -1,20 +1,26 @@
 import React, { useState, useMemo } from 'react';
 import { useCapabilities } from './hooks/useCapabilities';
+import { usePullToRefresh } from './hooks/usePullToRefresh';
+import { useFavourites } from './hooks/useFavourites';
 import Header from './components/Header';
 import SearchBar from './components/SearchBar';
 import CategoryCard from './components/CategoryCard';
 import CronList from './components/CronList';
 import IntegrationList from './components/IntegrationList';
 import WipList from './components/WipList';
+import Dashboard from './components/Dashboard';
+import PullIndicator from './components/PullIndicator';
 import Footer from './components/Footer';
 import './styles/App.css';
 
-const SECTIONS = ['capabilities', 'jobs', 'integrations', 'wip'];
+const SECTIONS = ['home', 'capabilities', 'jobs', 'integrations', 'wip'];
 
 export default function App() {
-  const { data, error, loading } = useCapabilities();
+  const { data, error, loading, refetch } = useCapabilities();
+  const { pulling, pullDistance, refreshing } = usePullToRefresh(refetch);
+  const { favourites, toggle: toggleFav, isFav } = useFavourites();
   const [search, setSearch] = useState('');
-  const [activeSection, setActiveSection] = useState('capabilities');
+  const [activeSection, setActiveSection] = useState('home');
   const [theme, setTheme] = useState(() => {
     if (typeof window !== 'undefined') {
       return localStorage.getItem('pinchy-theme') || 'dark';
@@ -77,6 +83,7 @@ export default function App() {
 
   return (
     <div className="app">
+      <PullIndicator pullDistance={pullDistance} refreshing={refreshing} />
       <Header theme={theme} onToggleTheme={toggleTheme} />
 
       <nav className="section-nav">
@@ -86,18 +93,21 @@ export default function App() {
             className={`nav-pill ${activeSection === s ? 'active' : ''}`}
             onClick={() => setActiveSection(s)}
           >
+            {s === 'home' && '🏠'}
             {s === 'capabilities' && '📋'}
             {s === 'jobs' && '⏰'}
             {s === 'integrations' && '🔌'}
             {s === 'wip' && '🚧'}
             <span className="nav-label">
-              {s === 'capabilities'
-                ? 'Capabilities'
-                : s === 'jobs'
-                  ? 'Jobs'
-                  : s === 'integrations'
-                    ? 'Integrations'
-                    : 'WIP'}
+              {s === 'home'
+                ? 'Home'
+                : s === 'capabilities'
+                  ? 'Capabilities'
+                  : s === 'jobs'
+                    ? 'Jobs'
+                    : s === 'integrations'
+                      ? 'Integrations'
+                      : 'WIP'}
             </span>
           </button>
         ))}
@@ -108,6 +118,16 @@ export default function App() {
       )}
 
       <main className="main-content">
+        {activeSection === 'home' && (
+          <section className="section">
+            <Dashboard
+              data={data}
+              favourites={favourites}
+              onNavigate={setActiveSection}
+            />
+          </section>
+        )}
+
         {activeSection === 'capabilities' && (
           <section className="section">
             {filteredCategories.length === 0 ? (
@@ -116,7 +136,12 @@ export default function App() {
               </div>
             ) : (
               filteredCategories.map((cat) => (
-                <CategoryCard key={cat.name} category={cat} search={search} />
+                <CategoryCard
+                  key={cat.name}
+                  category={cat}
+                  isFav={isFav}
+                  onToggleFav={toggleFav}
+                />
               ))
             )}
           </section>

@@ -7,7 +7,7 @@ function CopyToast({ visible }) {
   );
 }
 
-function CapabilityItem({ cap }) {
+function CapabilityItem({ cap, isFav, onToggleFav }) {
   const [copied, setCopied] = useState(null);
 
   const handleCopy = (text) => {
@@ -21,6 +21,13 @@ function CapabilityItem({ cap }) {
     <div className="capability">
       <div className="cap-header">
         <span className="cap-name">{cap.name}</span>
+        <button
+          className={`fav-btn ${isFav ? 'active' : ''}`}
+          onClick={() => onToggleFav(cap.name)}
+          aria-label={isFav ? 'Remove from favourites' : 'Add to favourites'}
+        >
+          {isFav ? '★' : '☆'}
+        </button>
       </div>
       {cap.description && (
         <p className="cap-description">{cap.description}</p>
@@ -59,7 +66,7 @@ function CapabilityItem({ cap }) {
   );
 }
 
-export default function CategoryCard({ category }) {
+export default function CategoryCard({ category, isFav, onToggleFav }) {
   const [expanded, setExpanded] = useState(false);
 
   return (
@@ -79,7 +86,12 @@ export default function CategoryCard({ category }) {
       {expanded && (
         <div className="category-body">
           {category.capabilities.map((cap) => (
-            <CapabilityItem key={cap.name} cap={cap} />
+            <CapabilityItem
+              key={cap.name}
+              cap={cap}
+              isFav={isFav(cap.name)}
+              onToggleFav={onToggleFav}
+            />
           ))}
         </div>
       )}
