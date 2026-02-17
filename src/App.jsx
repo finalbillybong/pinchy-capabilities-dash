@@ -20,7 +20,7 @@ export default function App() {
   const { pulling, pullDistance, refreshing } = usePullToRefresh(refetch);
   const { favourites, toggle: toggleFav, isFav } = useFavourites();
   const [search, setSearch] = useState('');
-  const [activeSection, setActiveSection] = useState('home');
+  const [activeSection, setActiveSection] = useState('capabilities');
   const [theme, setTheme] = useState(() => {
     if (typeof window !== 'undefined') {
       return localStorage.getItem('pinchy-theme') || 'dark';
