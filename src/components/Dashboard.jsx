@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { getNextRun, formatNextRun } from '../utils/cronNext';
 import './Dashboard.css';
 
@@ -15,7 +15,62 @@ function StatCard({ icon, label, value, sub }) {
   );
 }
 
+function FavDetail({ cap }) {
+  const [copied, setCopied] = useState(null);
+
+  const handleCopy = (text) => {
+    navigator.clipboard.writeText(text).then(() => {
+      setCopied(text);
+      setTimeout(() => setCopied(null), 1500);
+    });
+  };
+
+  return (
+    <div className="fav-detail">
+      {cap.description && (
+        <p className="fav-detail-desc">{cap.description}</p>
+      )}
+      {cap.triggers?.length > 0 && (
+        <div className="fav-detail-triggers">
+          {cap.triggers.map((trigger) => (
+            <button
+              key={trigger}
+              className="fav-detail-chip"
+              onClick={(e) => { e.stopPropagation(); handleCopy(trigger); }}
+              title={`Copy "${trigger}"`}
+            >
+              {trigger}
+              <span className={`fav-copy-toast ${copied === trigger ? 'show' : ''}`}>
+                Copied!
+              </span>
+            </button>
+          ))}
+        </div>
+      )}
+      {cap.examples?.length > 0 && (
+        <div className="fav-detail-examples">
+          {cap.examples.map((ex) => (
+            <button
+              key={ex}
+              className="fav-detail-example"
+              onClick={(e) => { e.stopPropagation(); handleCopy(ex); }}
+              title={`Copy "${ex}"`}
+            >
+              "{ex}"
+              <span className={`fav-copy-toast ${copied === ex ? 'show' : ''}`}>
+                Copied!
+              </span>
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function Dashboard({ data, favourites, onNavigate }) {
+  const [expandedFav, setExpandedFav] = useState(null);
+
   if (!data) return null;
 
   const totalCaps = (data.categories || []).reduce(
@@ -51,6 +106,10 @@ export default function Dashboard({ data, favourites, onNavigate }) {
       }
     }
   }
+
+  const toggleExpand = (name) => {
+    setExpandedFav((prev) => (prev === name ? null : name));
+  };
 
   return (
     <div className="dashboard">
@@ -97,19 +156,28 @@ export default function Dashboard({ data, favourites, onNavigate }) {
         <div className="dash-section">
           <h3 className="dash-section-title">Favourites</h3>
           <div className="fav-list">
-            {favCaps.map((cap) => (
-              <button
-                key={cap.name}
-                className="fav-card"
-                onClick={() => onNavigate('capabilities')}
-              >
-                <span className="fav-icon">{cap.categoryIcon}</span>
-                <div className="fav-info">
-                  <span className="fav-name">{cap.name}</span>
-                  <span className="fav-desc">{cap.description}</span>
+            {favCaps.map((cap) => {
+              const isOpen = expandedFav === cap.name;
+              return (
+                <div
+                  key={cap.name}
+                  className={`fav-card ${isOpen ? 'expanded' : ''}`}
+                  onClick={() => toggleExpand(cap.name)}
+                >
+                  <div className="fav-card-header">
+                    <span className="fav-icon">{cap.categoryIcon}</span>
+                    <div className="fav-info">
+                      <span className="fav-name">{cap.name}</span>
+                      {!isOpen && (
+                        <span className="fav-desc">{cap.description}</span>
+                      )}
+                    </div>
+                    <span className={`fav-chevron ${isOpen ? 'open' : ''}`}>›</span>
+                  </div>
+                  {isOpen && <FavDetail cap={cap} />}
                 </div>
-              </button>
-            ))}
+              );
+            })}
           </div>
         </div>
       )}
