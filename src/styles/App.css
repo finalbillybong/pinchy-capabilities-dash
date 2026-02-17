@@ -85,7 +85,9 @@
 /* Main content */
 .main-content {
   flex: 1;
-  padding: 8px 16px 24px;
+  padding: 8px 16px calc(env(safe-area-inset-bottom, 0px) + 24px);
+  padding-left: calc(env(safe-area-inset-left, 0px) + 16px);
+  padding-right: calc(env(safe-area-inset-right, 0px) + 16px);
 }
 
 .section {
