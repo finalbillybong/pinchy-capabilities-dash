@@ -1,3 +1,12 @@
+# WIP Counter Fix — Manual Patch Content
+
+Paste these files into your repo exactly as shown.
+
+---
+
+## `src/components/Dashboard.jsx`
+
+```jsx
 import React, { useState } from 'react';
 import { getNextRun, formatNextRun } from '../utils/cronNext';
 import './Dashboard.css';
@@ -82,9 +91,12 @@ export default function Dashboard({ data, favourites, onNavigate }) {
   const activeJobs = (data.cronJobs || []).filter(
     (j) => j.status === 'active'
   ).length;
-  const wipActive = (data.wip || []).filter(
-    (w) => w.status === 'in_progress'
-  ).length;
+  const isWipActive = (w) => {
+    const s = String(w?.status || '').toLowerCase();
+    return s === 'in_progress' || s === 'in-progress' || s === 'active';
+  };
+
+  const wipActive = (data.wip || []).filter(isWipActive).length;
 
   // Find next upcoming job
   const jobsWithNext = (data.cronJobs || [])
@@ -182,12 +194,12 @@ export default function Dashboard({ data, favourites, onNavigate }) {
         </div>
       )}
 
-      {(data.wip || []).filter((w) => w.status === 'in_progress').length > 0 && (
+      {(data.wip || []).filter(isWipActive).length > 0 && (
         <div className="dash-section">
           <h3 className="dash-section-title">Active Development</h3>
           <div className="fav-list">
             {data.wip
-              .filter((w) => w.status === 'in_progress')
+              .filter(isWipActive)
               .map((w) => (
                 <button
                   key={w.name}
@@ -197,7 +209,7 @@ export default function Dashboard({ data, favourites, onNavigate }) {
                   <span className="fav-icon">🚧</span>
                   <div className="fav-info">
                     <span className="fav-name">{w.name}</span>
-                    <span className="fav-desc">{w.note || w.description}</span>
+                    <span className="fav-desc">{w.note || w.summary || w.description}</span>
                   </div>
                 </button>
               ))}
@@ -207,3 +219,46 @@ export default function Dashboard({ data, favourites, onNavigate }) {
     </div>
   );
 }
+```
+
+---
+
+## `src/components/WipList.jsx`
+
+```jsx
+import React from 'react';
+import './WipList.css';
+
+export default function WipList({ items }) {
+  if (!items?.length) {
+    return <p className="empty-msg">No work in progress.</p>;
+  }
+
+  const isActive = (item) => {
+    const s = String(item?.status || '').toLowerCase();
+    return s === 'in_progress' || s === 'in-progress' || s === 'active';
+  };
+
+  return (
+    <div className="wip-list">
+      <h2 className="section-title">🚧 Work in Progress</h2>
+      <div className="wip-cards">
+        {items.map((item) => (
+          <div key={item.name} className="wip-card">
+            <div className="wip-top">
+              <span className={`wip-badge ${isActive(item) ? 'active' : 'planned'}`}>
+                {isActive(item) ? 'In Progress' : 'Planned'}
+              </span>
+              <span className="wip-name">{item.name}</span>
+            </div>
+            {(item.description || item.summary) && (
+              <p className="wip-desc">{item.description || item.summary}</p>
+            )}
+            {item.note && <p className="wip-note">{item.note}</p>}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+```
